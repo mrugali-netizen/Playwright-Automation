@@ -257,7 +257,11 @@ Provide the best possible answer, using the history for context when helpful.`,
               lowerText.includes('output') || 
               lowerText.includes('today') ||
               lowerText.includes('nodes') ||
-              lowerText.includes('execution steps')) return false;
+              lowerText.includes('execution steps') ||
+              lowerText.includes('copyright') ||
+              lowerText.includes('softweb') ||
+              lowerText.includes('rights reserved') ||
+              lowerText.includes('©')) return false;
           return true;
         });
         if (matches.length > 0) {
@@ -317,7 +321,11 @@ Provide the best possible answer, using the history for context when helpful.`,
             lowerText.includes('output') || 
             lowerText.includes('today') ||
             lowerText.includes('nodes') ||
-            lowerText.includes('execution steps')) return false;
+            lowerText.includes('execution steps') ||
+            lowerText.includes('copyright') ||
+            lowerText.includes('softweb') ||
+            lowerText.includes('rights reserved') ||
+            lowerText.includes('©')) return false;
         return true;
       });
 

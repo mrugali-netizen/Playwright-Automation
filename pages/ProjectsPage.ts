@@ -65,6 +65,8 @@ export class ProjectsPage {
   async deleteProject(projectName: string) {
     console.log('deleteProject: Navigating to projects list...');
     await this.goto();
+    const card = this.getProjectCard(projectName);
+    await expect(card).toBeVisible({ timeout: 10000 });
     console.log('deleteProject: Finding more actions button...');
     const btn = this.getProjectMoreActionsButton(projectName);
     console.log('deleteProject: Clicking more actions button...');
