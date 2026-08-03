@@ -80,25 +80,38 @@ export class WorkflowBuilderPage {
    * This is more reliable for custom drag-and-drop frameworks (like Angular CDK).
    */
   async dragElement(source: Locator, target: Locator, targetXOffset: number, targetYOffset: number) {
+    // 1. Ensure elements are in viewport and visible
+    await source.scrollIntoViewIfNeeded();
+    await target.scrollIntoViewIfNeeded();
+
     const sourceBox = await source.boundingBox();
     const targetBox = await target.boundingBox();
 
-    if (sourceBox && targetBox) {
-      const startX = sourceBox.x + sourceBox.width / 2;
-      const startY = sourceBox.y + sourceBox.height / 2;
-      
-      const endX = targetBox.x + targetXOffset;
-      const endY = targetBox.y + targetYOffset;
-
-      await this.page.mouse.move(startX, startY);
-      await this.page.mouse.down();
-      // Move in steps to allow the UI to register the dragging state
-      await this.page.mouse.move((startX + endX) / 2, (startY + endY) / 2, { steps: 5 });
-      await this.page.mouse.move(endX, endY, { steps: 5 });
-      await this.page.waitForTimeout(500);
-      await this.page.mouse.up();
-      await this.page.waitForTimeout(1000);
+    // 2. Fail with a clear message instead of failing silently
+    if (!sourceBox || !targetBox) {
+      throw new Error(`Failed to get bounding box for source or target during dragElement.`);
     }
+
+    const startX = sourceBox.x + sourceBox.width / 2;
+    const startY = sourceBox.y + sourceBox.height / 2;
+    
+    const endX = targetBox.x + targetXOffset;
+    const endY = targetBox.y + targetYOffset;
+
+    // 3. Move and drag with small pauses to allow the application state to register the drag
+    await this.page.mouse.move(startX, startY);
+    await this.page.waitForTimeout(100);
+    await this.page.mouse.down();
+    await this.page.waitForTimeout(200);
+    
+    // Drag in slower steps with a minor pause in between
+    await this.page.mouse.move((startX + endX) / 2, (startY + endY) / 2, { steps: 10 });
+    await this.page.waitForTimeout(100);
+    await this.page.mouse.move(endX, endY, { steps: 10 });
+    await this.page.waitForTimeout(200);
+    
+    await this.page.mouse.up();
+    await this.page.waitForTimeout(1000);
   }
 
   /**
