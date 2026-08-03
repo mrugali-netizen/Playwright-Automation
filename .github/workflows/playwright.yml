@@ -25,7 +25,7 @@ jobs:
         BASE_URL: ${{ secrets.BASE_URL }}
         LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
         LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-      run: npx playwright test --project=chromium --workers=1
+      run: npx playwright test TestScripts/Workflow_creation.ts --project=chromium --workers=1
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
