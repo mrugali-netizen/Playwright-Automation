@@ -38,11 +38,14 @@ export class ProjectsPage {
   }
 
   async goto() {
-    await this.page.goto('projects', { waitUntil: 'domcontentloaded' });
+    await this.page.goto('projects', { waitUntil: 'load' });
     const getAllBtn = this.page.locator('button:has-text("Get all projects")').or(this.page.locator('text=Get all projects')).first();
-    if (await getAllBtn.isVisible()) {
+    try {
+      await getAllBtn.waitFor({ state: 'visible', timeout: 5000 });
       await getAllBtn.click();
-      await this.page.waitForTimeout(1000); // Wait for projects list to update
+      await this.page.waitForTimeout(2000); // Wait for projects list to update
+    } catch (e) {
+      // Ignore if the button does not appear (projects might be loaded by default)
     }
   }
 
