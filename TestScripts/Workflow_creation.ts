@@ -240,25 +240,14 @@ Provide the best possible answer, using the history for context when helpful.`,
             cur = cur.parentElement;
           }
 
+          if (el.closest('app-sidebar') || el.closest('.sidebar') || el.closest('.left-menu') || el.closest('header') || el.closest('footer')) return false;
           const rect = el.getBoundingClientRect();
-          const viewWidth = window.innerWidth;
-          const viewHeight = window.innerHeight;
-          if (rect.left < viewWidth * 0.2 || rect.left > viewWidth * 0.6 || rect.top < viewHeight * 0.15 || rect.width === 0 || rect.height === 0) return false;
-          const center = rect.left + rect.width / 2;
-          if (center > viewWidth * 0.7) return false;
+          if (rect.width === 0 || rect.height === 0) return false;
 
           const text = el.textContent || '';
           if (text.trim().length < 5) return false;
           const lowerText = text.toLowerCase();
-          if (lowerText.includes('workflow') || 
-              lowerText.includes('langgraph') || 
-              lowerText.includes('user input') || 
-              lowerText.includes('context-aware') || 
-              lowerText.includes('output') || 
-              lowerText.includes('today') ||
-              lowerText.includes('nodes') ||
-              lowerText.includes('execution steps') ||
-              lowerText.includes('copyright') ||
+          if (lowerText.includes('copyright') ||
               lowerText.includes('softweb') ||
               lowerText.includes('rights reserved') ||
               lowerText.includes('©')) return false;
@@ -304,25 +293,14 @@ Provide the best possible answer, using the history for context when helpful.`,
           cur = cur.parentElement;
         }
 
+        if (el.closest('app-sidebar') || el.closest('.sidebar') || el.closest('.left-menu') || el.closest('header') || el.closest('footer')) return false;
         const rect = el.getBoundingClientRect();
-        const viewWidth = window.innerWidth;
-        const viewHeight = window.innerHeight;
-        if (rect.left < viewWidth * 0.2 || rect.left > viewWidth * 0.6 || rect.top < viewHeight * 0.15 || rect.width === 0 || rect.height === 0) return false;
-        const center = rect.left + rect.width / 2;
-        if (center > viewWidth * 0.7) return false;
+        if (rect.width === 0 || rect.height === 0) return false;
         
         const text = el.textContent || '';
         if (text.trim().length < 5) return false;
         const lowerText = text.toLowerCase();
-        if (lowerText.includes('workflow') || 
-            lowerText.includes('langgraph') || 
-            lowerText.includes('user input') || 
-            lowerText.includes('context-aware') || 
-            lowerText.includes('output') || 
-            lowerText.includes('today') ||
-            lowerText.includes('nodes') ||
-            lowerText.includes('execution steps') ||
-            lowerText.includes('copyright') ||
+        if (lowerText.includes('copyright') ||
             lowerText.includes('softweb') ||
             lowerText.includes('rights reserved') ||
             lowerText.includes('©')) return false;
