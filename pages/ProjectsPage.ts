@@ -34,7 +34,8 @@ export class ProjectsPage {
 
   // Dynamic locator for the more_vert menu button of a specific project card
   getProjectMoreActionsButton(projectName: string): Locator {
-    return this.page.getByRole('listitem').filter({ has: this.getProjectCard(projectName) }).getByRole('button').filter({ hasText: 'more_vert' }).first();
+    const card = this.page.getByRole('listitem').filter({ has: this.getProjectCard(projectName) });
+    return card.locator('button:has-text("more_vert"), button:has(.material-icons), button:has(mat-icon), button').first();
   }
 
   async goto() {
