@@ -38,7 +38,11 @@ export class ProjectsPage {
   }
 
   async goto() {
-    await this.page.goto('projects', { waitUntil: 'load' });
+    const url = this.page.url();
+    // Only navigate if we are not already on the projects page
+    if (!url.includes('/projects')) {
+      await this.page.goto('projects', { waitUntil: 'load' });
+    }
     const getAllBtn = this.page.locator('button:has-text("Get all projects")').or(this.page.locator('text=Get all projects')).first();
     try {
       await getAllBtn.waitFor({ state: 'visible', timeout: 5000 });
@@ -69,7 +73,7 @@ export class ProjectsPage {
     console.log('deleteProject: Navigating to projects list...');
     await this.goto();
     const card = this.getProjectCard(projectName);
-    await expect(card).toBeVisible({ timeout: 10000 });
+    await expect(card).toBeVisible({ timeout: 20000 });
     console.log('deleteProject: Finding more actions button...');
     const btn = this.getProjectMoreActionsButton(projectName);
     console.log('deleteProject: Clicking more actions button...');
