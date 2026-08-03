@@ -241,9 +241,11 @@ Provide the best possible answer, using the history for context when helpful.`,
           }
 
           const rect = el.getBoundingClientRect();
-          if (rect.left < 400 || rect.left > 700 || rect.top < 150 || rect.width === 0 || rect.height === 0) return false;
+          const viewWidth = window.innerWidth;
+          const viewHeight = window.innerHeight;
+          if (rect.left < viewWidth * 0.2 || rect.left > viewWidth * 0.6 || rect.top < viewHeight * 0.15 || rect.width === 0 || rect.height === 0) return false;
           const center = rect.left + rect.width / 2;
-          if (center > 850) return false;
+          if (center > viewWidth * 0.7) return false;
 
           const text = el.textContent || '';
           if (text.trim().length < 5) return false;
@@ -299,9 +301,11 @@ Provide the best possible answer, using the history for context when helpful.`,
         }
 
         const rect = el.getBoundingClientRect();
-        if (rect.left < 400 || rect.left > 700 || rect.top < 150 || rect.width === 0 || rect.height === 0) return false;
+        const viewWidth = window.innerWidth;
+        const viewHeight = window.innerHeight;
+        if (rect.left < viewWidth * 0.2 || rect.left > viewWidth * 0.6 || rect.top < viewHeight * 0.15 || rect.width === 0 || rect.height === 0) return false;
         const center = rect.left + rect.width / 2;
-        if (center > 850) return false;
+        if (center > viewWidth * 0.7) return false;
         
         const text = el.textContent || '';
         if (text.trim().length < 5) return false;
