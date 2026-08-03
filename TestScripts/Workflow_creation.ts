@@ -333,7 +333,6 @@ Provide the best possible answer, using the history for context when helpful.`,
   console.log(`Successfully updated testing spreadsheet at: ${questionsFilePath}`);
 
   // 17. Navigate back to project list and delete the project
-  await projectsPage.goto();
   await projectsPage.deleteProject(projectName);
   await expect(projectsPage.getProjectCard(projectName)).not.toBeVisible();
   console.log(`Deleted project: ${projectName}`);
