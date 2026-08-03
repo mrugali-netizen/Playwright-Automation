@@ -215,124 +215,34 @@ Provide the best possible answer, using the history for context when helpful.`,
     await expect(chatInput).toBeVisible();
 
     // Submit question
+    const initialCount = await page.locator('.chat-content.chat-ai').count();
     await chatInput.click();
     await chatInput.fill(queryMessage);
     await chatInput.press('Enter');
 
     // Wait for response to generate and stream fully (detect length stability)
     console.log('Waiting for response...');
+    await expect(page.locator('.chat-content.chat-ai')).toHaveCount(initialCount + 1, { timeout: 20000 });
+
+    const lastReply = page.locator('.chat-content.chat-ai').last();
     let previousLength = 0;
     let stableIntervals = 0;
-    for (let attempt = 0; attempt < 20; attempt++) {
+    for (let attempt = 0; attempt < 30; attempt++) {
       await page.waitForTimeout(1000);
-      const currentLength = await page.evaluate(() => {
-        const elements = Array.from(document.querySelectorAll('div, p, span, section'));
-        const matches = elements.filter(el => {
-          const isInput = el.closest('input') || el.closest('textarea') || el.closest('.chat-input');
-          if (isInput) return false;
-          
-          let cur: HTMLElement | null = el as HTMLElement;
-          while (cur) {
-            const st = window.getComputedStyle(cur);
-            if (st.justifyContent === 'flex-end' || st.alignItems === 'flex-end' || st.textAlign === 'right' || cur.classList.contains('user') || cur.classList.contains('me') || cur.classList.contains('sender')) {
-              return false;
-            }
-            cur = cur.parentElement;
-          }
-
-          if (el.closest('app-sidebar') || el.closest('.sidebar') || el.closest('.left-menu') || el.closest('header') || el.closest('footer')) return false;
-          const rect = el.getBoundingClientRect();
-          if (rect.width === 0 || rect.height === 0) return false;
-
-          const text = el.textContent || '';
-          const cleanText = text.trim();
-          if (cleanText.length < 5) return false;
-
-          // Exclude pure date/time stamp strings
-          const isTime = /^\d{1,2}:\d{2}(:\d{2})?(\s?[APap][Mm])?(\s*[A-Z]{3,4})?$/;
-          const isDate = /^[A-Za-z]+ \d{1,2}(st|nd|rd|th)? \d{4},?\s+\d{1,2}:\d{2}(:\d{2})?(\s?[APap][Mm])?(\s*[A-Z]{3,4})?$/;
-          if (isTime.test(cleanText) || isDate.test(cleanText)) return false;
-
-          const lowerText = text.toLowerCase();
-          if (lowerText.includes('copyright') ||
-              lowerText.includes('softweb') ||
-              lowerText.includes('rights reserved') ||
-              lowerText.includes('©')) return false;
-          return true;
-        });
-        if (matches.length > 0) {
-          matches.sort((a, b) => a.textContent!.length - b.textContent!.length);
-          for (const match of matches) {
-            const t = match.textContent!.trim();
-            if (t.length > 15 && !t.includes(' -> ')) {
-              return t.length;
-            }
-          }
-        }
-        return 0;
-      });
+      const text = (await lastReply.textContent()) || '';
+      const currentLength = text.trim().length;
 
       if (currentLength > 0 && currentLength === previousLength) {
         stableIntervals++;
-        if (stableIntervals >= 2) break; // Break when length is stable for 2 seconds
+        if (stableIntervals >= 3) break; // Break when length is stable for 3 seconds
       } else {
         stableIntervals = 0;
         previousLength = currentLength;
       }
     }
 
-    // Give it a final moment to settle
-    await page.waitForTimeout(2000);
-
-    // Dynamically extract the last generated assistant reply text
-    const lastBubbleText = await page.evaluate(() => {
-      const elements = Array.from(document.querySelectorAll('div, p, span, section'));
-      const matches = elements.filter(el => {
-        const isInput = el.closest('input') || el.closest('textarea') || el.closest('.chat-input');
-        if (isInput) return false;
-
-        let cur: HTMLElement | null = el as HTMLElement;
-        while (cur) {
-          const st = window.getComputedStyle(cur);
-          if (st.justifyContent === 'flex-end' || st.alignItems === 'flex-end' || st.textAlign === 'right' || cur.classList.contains('user') || cur.classList.contains('me') || cur.classList.contains('sender')) {
-            return false;
-          }
-          cur = cur.parentElement;
-        }
-
-        if (el.closest('app-sidebar') || el.closest('.sidebar') || el.closest('.left-menu') || el.closest('header') || el.closest('footer')) return false;
-        const rect = el.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) return false;
-        
-        const text = el.textContent || '';
-        const cleanText = text.trim();
-        if (cleanText.length < 5) return false;
-
-        // Exclude pure date/time stamp strings
-        const isTime = /^\d{1,2}:\d{2}(:\d{2})?(\s?[APap][Mm])?(\s*[A-Z]{3,4})?$/;
-        const isDate = /^[A-Za-z]+ \d{1,2}(st|nd|rd|th)? \d{4},?\s+\d{1,2}:\d{2}(:\d{2})?(\s?[APap][Mm])?(\s*[A-Z]{3,4})?$/;
-        if (isTime.test(cleanText) || isDate.test(cleanText)) return false;
-
-        const lowerText = text.toLowerCase();
-        if (lowerText.includes('copyright') ||
-            lowerText.includes('softweb') ||
-            lowerText.includes('rights reserved') ||
-            lowerText.includes('©')) return false;
-        return true;
-      });
-
-      if (matches.length > 0) {
-        matches.sort((a, b) => a.textContent!.length - b.textContent!.length);
-        for (const match of matches) {
-          const t = match.textContent!.trim();
-          if (t.length > 15 && !t.includes(' -> ')) {
-            return t;
-          }
-        }
-        return matches[0].textContent!.trim();
-      }
-      return '';
-    });
+    // Extract the final answer text
+    const lastBubbleText = ((await lastReply.textContent()) || '').trim();
 
     console.log(`Chat Answer: "${lastBubbleText}"`);
 
