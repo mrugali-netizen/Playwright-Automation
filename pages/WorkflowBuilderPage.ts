@@ -70,6 +70,8 @@ export class WorkflowBuilderPage {
     await expect(this.blankWorkflowCard).toBeVisible();
     await this.blankWorkflowCard.click({ force: true });
     await expect(this.canvas).toBeVisible();
+    // Wait for the graphing library layout calculations and animations to settle
+    await this.page.waitForTimeout(2000);
   }
 
   /**
@@ -82,7 +84,6 @@ export class WorkflowBuilderPage {
   async dragElement(source: Locator, target: Locator, targetXOffset: number, targetYOffset: number) {
     // 1. Ensure elements are in viewport and visible
     await source.scrollIntoViewIfNeeded();
-    await target.scrollIntoViewIfNeeded();
 
     const sourceBox = await source.boundingBox();
     const targetBox = await target.boundingBox();
