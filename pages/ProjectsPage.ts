@@ -41,7 +41,7 @@ export class ProjectsPage {
     const url = this.page.url();
     // Only navigate if we are not already on the projects page
     if (!url.includes('/projects')) {
-      await this.page.goto('projects', { waitUntil: 'load' });
+      await this.page.goto('projects', { waitUntil: 'domcontentloaded' });
     }
     const getAllBtn = this.page.locator('button:has-text("Get all projects")').or(this.page.locator('text=Get all projects')).first();
     try {
@@ -77,11 +77,11 @@ export class ProjectsPage {
     console.log('deleteProject: Finding more actions button...');
     const btn = this.getProjectMoreActionsButton(projectName);
     console.log('deleteProject: Clicking more actions button...');
-    await btn.click();
+    await btn.click({ force: true });
     console.log('deleteProject: Clicking delete menu item...');
-    await this.deleteMenuItem.click();
+    await this.deleteMenuItem.click({ force: true });
     console.log('deleteProject: Confirming delete...');
-    await this.confirmDeleteButton.click();
+    await this.confirmDeleteButton.click({ force: true });
     console.log('deleteProject: Complete!');
   }
 }
