@@ -245,7 +245,14 @@ Provide the best possible answer, using the history for context when helpful.`,
           if (rect.width === 0 || rect.height === 0) return false;
 
           const text = el.textContent || '';
-          if (text.trim().length < 5) return false;
+          const cleanText = text.trim();
+          if (cleanText.length < 5) return false;
+
+          // Exclude pure date/time stamp strings
+          const isTime = /^\d{1,2}:\d{2}(:\d{2})?(\s?[APap][Mm])?(\s*[A-Z]{3,4})?$/;
+          const isDate = /^[A-Za-z]+ \d{1,2}(st|nd|rd|th)? \d{4},?\s+\d{1,2}:\d{2}(:\d{2})?(\s?[APap][Mm])?(\s*[A-Z]{3,4})?$/;
+          if (isTime.test(cleanText) || isDate.test(cleanText)) return false;
+
           const lowerText = text.toLowerCase();
           if (lowerText.includes('copyright') ||
               lowerText.includes('softweb') ||
@@ -298,7 +305,14 @@ Provide the best possible answer, using the history for context when helpful.`,
         if (rect.width === 0 || rect.height === 0) return false;
         
         const text = el.textContent || '';
-        if (text.trim().length < 5) return false;
+        const cleanText = text.trim();
+        if (cleanText.length < 5) return false;
+
+        // Exclude pure date/time stamp strings
+        const isTime = /^\d{1,2}:\d{2}(:\d{2})?(\s?[APap][Mm])?(\s*[A-Z]{3,4})?$/;
+        const isDate = /^[A-Za-z]+ \d{1,2}(st|nd|rd|th)? \d{4},?\s+\d{1,2}:\d{2}(:\d{2})?(\s?[APap][Mm])?(\s*[A-Z]{3,4})?$/;
+        if (isTime.test(cleanText) || isDate.test(cleanText)) return false;
+
         const lowerText = text.toLowerCase();
         if (lowerText.includes('copyright') ||
             lowerText.includes('softweb') ||
