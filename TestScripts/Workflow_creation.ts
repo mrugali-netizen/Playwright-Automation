@@ -127,7 +127,7 @@ Provide the best possible answer, using the history for context when helpful.`,
 
   // 7. Create project and assert creation
   await projectsPage.createProject(projectName, projectDesc, securityType);
-  await expect(page.getByRole('alert').or(page.locator('.mat-mdc-simple-snack-bar, .toast'))).toContainText(/created successfully/i);
+  await expect(page.getByRole('alert').or(page.locator('.mat-mdc-simple-snack-bar, .toast')).filter({ hasText: /created successfully/i })).toBeVisible();
   await expect(projectsPage.getProjectCard(projectName)).toBeVisible();
 
   // 8. Open the project dashboard

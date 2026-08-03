@@ -25,7 +25,7 @@ test('AddProject@smoke', async ({ page }) => {
   await projectsPage.createProject(projectName, projectDesc, securityType);
 
   // 3. Verify project creation
-  await expect(page.getByRole('alert')).toContainText('Project created successfully');
+  await expect(page.getByRole('alert').filter({ hasText: 'Project created successfully' })).toBeVisible();
   const projectCard = projectsPage.getProjectCard(projectName);
   await expect(projectCard).toBeVisible();
   await expect(page.locator('app-workflow-landing')).toContainText('Transform Your Goals into Actionable Plans with AI-Powered Workflows');
