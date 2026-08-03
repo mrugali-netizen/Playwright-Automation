@@ -26,7 +26,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+    /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: process.env.BASE_URL || 'https://needle2.softwebsolutions.com/workflow/',
@@ -36,6 +36,14 @@ export default defineConfig({
 
     /* Record trace on failure */
     trace: 'retain-on-failure',
+
+    /* Run headless in CI, headed locally */
+    headless: !process.env.CI,
+
+    /* Slow motion delay locally, none in CI */
+    launchOptions: {
+      slowMo: process.env.CI ? 0 : 1500,
+    },
   },
 
   /* Folder for test artifacts like screenshots, videos, traces, etc. */

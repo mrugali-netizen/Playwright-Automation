@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 
-test.use({ launchOptions: { slowMo: 1500 } });
 
 test('UserLogin@smoke', async ({ page }) => {
   const loginPage = new LoginPage(page);

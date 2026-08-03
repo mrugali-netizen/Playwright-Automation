@@ -3,7 +3,6 @@ import { LoginPage } from '../pages/LoginPage';
 import { ProjectsPage } from '../pages/ProjectsPage';
 import { getExcelData } from '../utils/excelReader';
 
-test.use({ launchOptions: { slowMo: 1500 } });
 
 test('AddProject@smoke', async ({ page }) => {
   test.setTimeout(60000);
