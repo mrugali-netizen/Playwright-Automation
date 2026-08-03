@@ -39,3 +39,23 @@ jobs:
         name: test-data-results
         path: TestData/
         retention-days: 30
+    - name: Send Email with Excel Results
+      uses: dawidd6/action-send-mail@v4
+      if: always()
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.MAIL_USERNAME }}
+        password: ${{ secrets.MAIL_PASSWORD }}
+        subject: Playwright Test Results - Excel Data Attached
+        to: ${{ secrets.RECIPIENT_EMAIL }}
+        from: Playwright CI Pipeline <playwright-ci@github.com>
+        body: |
+          Hello,
+          
+          The Playwright automation run has finished.
+          Please find the generated Excel spreadsheet with the test results attached.
+          
+          Best regards,
+          CI Automation Pipeline
+        attachments: TestData/WorkflowTestingQuestion.xlsx
