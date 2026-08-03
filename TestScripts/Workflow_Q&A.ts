@@ -4,7 +4,7 @@ import { WorkflowPage } from '../pages/WorkflowPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { getExcelData, writeExcelData } from '../utils/excelReader';
 
-test.use({ launchOptions: { headless: false, slowMo: 1500 } });
+test.use({ launchOptions: { headless: !process.env.CI, slowMo: process.env.CI ? 0 : 1500 } });
 
 test('Workflow_LLMQA@smoke', async ({ page }, testInfo) => {
   test.setTimeout(180000); // 3 minutes timeout for looping through questions

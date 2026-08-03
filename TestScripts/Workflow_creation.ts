@@ -6,7 +6,7 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { WorkflowPage } from '../pages/WorkflowPage';
 import { getExcelData, writeExcelData } from '../utils/excelReader';
 
-test.use({ launchOptions: { headless: false, slowMo: 1500 } });
+test.use({ launchOptions: { headless: !process.env.CI, slowMo: process.env.CI ? 0 : 1500 } });
 
 test('Workflow_creation@smoke', async ({ page }, testInfo) => {
   test.setTimeout(600000); // 10 minutes timeout for building + loops
