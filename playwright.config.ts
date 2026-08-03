@@ -38,7 +38,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
 
     /* Run headless in CI, headed locally */
-    headless: !process.env.CI,
+    headless: !!process.env.CI,
 
     /* Slow motion delay locally, none in CI */
     launchOptions: {
